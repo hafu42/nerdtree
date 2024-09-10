@@ -363,8 +363,15 @@ endfunction
 function! s:Path.getSortOrderIndex()
     let i = 0
     while i < len(g:NERDTreeSortOrder)
+        let matched = self.getLastPathComponent(1) =~# g:NERDTreeSortOrder[i]
         if g:NERDTreeSortOrder[i] !~? '\[\[-\?\(timestamp\|size\|extension\)\]\]' &&
-        \ self.getLastPathComponent(1) =~# g:NERDTreeSortOrder[i]
+        \ matched
+
+            " don't sort directory at first
+            if matched && i == 0
+              return 1
+            endif
+
             return i
         endif
         let i = i + 1
